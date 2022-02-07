@@ -1,12 +1,52 @@
 # Monitoring Tools for a Pimoroni Enviro+
 
-> This repository is a fork from [maxandersen/internet-monitoring](https://github.com/maxandersen/internet-monitoring), tailored for use on a Raspberry Pi. It has only been tested on a Raspberry Pi 4 running Pi OS 64-bit beta.
+> This repository is inspired by [geerlingguy/internet-monitoring](https://github.com/geerlingguy/internet-monitoring) and [tijmenvandenbrink/enviroplus_exporter#getting-started](https://github.com/tijmenvandenbrink/enviroplus_exporter#getting-started). It has only been tested on a Raspberry Pi 4 running Pi OS 64-bit (Server), and a Raspberry Pi Zero 2 running Pi OS 64-bit (Client).
 
-Stand-up a Docker [Prometheus](http://prometheus.io/) stack containing Prometheus, Grafana with [blackbox-exporter](https://github.com/prometheus/blackbox_exporter), and [speedtest-exporter](https://github.com/MiguelNdeCarvalho/speedtest-exporter) to collect and graph home Internet reliability and throughput.
+Stand-up a Docker [Prometheus](http://prometheus.io/) stack containing Prometheus, Grafana with [blackbox-exporter](https://github.com/prometheus/blackbox_exporter) to collect and graph home Internet reliability and throughput.
 
 ## Pre-requisites
 
 Make sure Docker and [Docker Compose](https://docs.docker.com/compose/install/) are installed on your Docker host machine.
+
+### Install
+Some aspects of these steps may be dated, but this has typically worked for me.
+
+Run `docker` install script
+```sh
+curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
+curl -fsSL https://get.docker.com | bash
+```
+
+Add `docker` to User's groups
+```sh
+sudo usermod -aG docker $(whoami)
+```
+
+Install `docker-compose`
+```sh
+pip3 install docker-compose
+```
+
+Config for docker daemon
+```sh
+# this may require you to run `sudo su` first
+if ! [ -f "/etc/docker/daemon.json" ]; then
+    echo '
+    {
+      "experimental": true,
+      "live-restore": true,
+      "ipv6": false,
+      "icc": false,
+      "no-new-privileges": false
+    }' > /etc/docker/daemon.json
+fi
+```
+
+Enable docker service
+```sh
+sudo systemctl enable docker
+sudo systemctl enable docker
+```
 
 ## Quick Start
 
@@ -38,6 +78,8 @@ The DataSource and Dashboard for Grafana are automatically provisioned.
 Use the following project on your `target` Pi, the one you plan to pull metrics from. 
 > https://github.com/tijmenvandenbrink/enviroplus_exporter#getting-started
 
+
+Once setup, you can verify that Prometheus is correctly pulling metrics from your target, by visiting: http://localhost:9090/targets
 
 ## Interesting urls
 
