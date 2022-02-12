@@ -45,7 +45,7 @@ fi
 Enable docker service
 ```sh
 sudo systemctl enable docker
-sudo systemctl enable docker
+sudo systemctl start docker
 ```
 
 ## Quick Start
